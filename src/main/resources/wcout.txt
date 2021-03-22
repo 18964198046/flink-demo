@@ -1,0 +1,5 @@
+yarn 2
+mapreduce 3
+hdfs 1
+lagou 3
+hadoop 2

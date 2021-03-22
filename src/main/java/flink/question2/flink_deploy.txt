@@ -1,0 +1,20 @@
+1. 上传Flink安装包到服务器
+
+2. 修改flink/conf/flink-conf.yaml 文件
+jobmanager.rpc.address: linux121
+taskmanager.numberOfTaskSlots: 2
+
+3. 修改 /conf/slave文件
+linux-121
+linux-122
+linux-123
+linux-124
+linux-125
+
+4. standalone模式启动flink
+bin目录下执行./start-cluster.sh
+
+5. jps进程查看核实
+7952 TaskManagerRunner
+7004 StandaloneSessionClusterEntrypoint
+
