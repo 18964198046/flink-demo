@@ -1,0 +1,82 @@
+ClickHouse分布式集群安装
+
+1.上传安装包
+clickhouse-client-20.5.4.40-1.el7.x86_64.rpm
+clickhouse-common-static-20.5.4.40- 1.el7.x86_64.rpm
+clickhouse-server-20.5.4.40-1.el7.x86_64.rpm
+clickhouse-server-common-20.5.4.40- 1.el7.x86_64.rpm
+
+2.安装RPM包
+rpm -ivh ./*.rpm
+
+3.配置config.xml
+vim /etc/clickhouse-server/config.xml
+<include_from>/etc/clickhouse-server/config.d/metrika.xml</include_from>
+
+4.配置metrika.xml
+<yandex>
+
+    <clickhouse_remote_servers>
+        <replicas>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>linux121</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>linux122</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>linux123</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </replicas>
+    </clickhouse_remote_servers>
+
+    <zookeeper-servers>
+        <node index="1">
+            <host>linux121</host>
+            <port>2181</port>
+        </node>
+        <node index="2">
+            <host>linux122</host>
+            <port>2181</port>
+        </node>
+        <node index="3">
+            <host>linux123</host>
+            <port>2181</port>
+        </node>
+    </zookeeper-servers>
+
+    <macros>
+        <shard>01</shard>
+        <replica>linux121</replica>
+    </macros>
+
+    <networks>
+        <ip>::/0</ip>
+    </networks>
+
+    <clickhouse_compression>
+        <case>
+            <min_part_size>10000000000</min_part_size>
+            <min_part_size_ratio>0.01</min_part_size_ratio>
+            <method>lz4</method>
+        </case>
+    </clickhouse_compression>
+
+</yandex>
+
+
+4.启动ClickServer
+sudo -u clickhouse clickhouse-server --config-file=/etc/clickhouse-server/config.xml
+

@@ -57,6 +57,11 @@
             <artifactId>flink-table-planner-blink_2.12</artifactId>
             <version>1.11.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.kudu</groupId>
+            <artifactId>kudu-client</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
 
 
