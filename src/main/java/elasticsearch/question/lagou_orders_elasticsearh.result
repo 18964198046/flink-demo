@@ -1,0 +1,215 @@
+1.创建索引
+PUT lagou_orders
+{
+  "mappings": {
+    "numeric_detection": true,
+    "properties": {
+      "orderStatus": {
+        "type": "keyword"
+      },
+      "payMode": {
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+2.按照订单状态分组统计订单笔数
+POST /lagou_orders/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_order_status": {
+      "terms": {
+        "field": "orderStatus"
+      }
+    }
+  }
+}
+
+查询结果:
+{
+  "took" : 316,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 10000,
+      "relation" : "gte"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "group_by_order_status" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 1070,
+      "buckets" : [
+        {
+          "key" : "已支付",
+          "doc_count" : 111169
+        },
+        {
+          "key" : "支付中",
+          "doc_count" : 606
+        },
+        {
+          "key" : "代付拒绝",
+          "doc_count" : 602
+        },
+        {
+          "key" : "已关单",
+          "doc_count" : 599
+        },
+        {
+          "key" : "发货失败",
+          "doc_count" : 580
+        },
+        {
+          "key" : "订单过期",
+          "doc_count" : 579
+        },
+        {
+          "key" : "产品已失效",
+          "doc_count" : 578
+        },
+        {
+          "key" : "已发货",
+          "doc_count" : 573
+        },
+        {
+          "key" : "已退款",
+          "doc_count" : 573
+        },
+        {
+          "key" : "未支付",
+          "doc_count" : 571
+        }
+      ]
+    }
+  }
+}
+
+
+3.按照订单状态分组统计订单金额
+POST /lagou_orders/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_order_status": {
+      "terms": {
+        "field": "orderStatus"
+      },
+      "aggs": {
+        "sum_payment": {
+          "sum": {
+            "field": "payment"
+          }
+        }
+      }
+    }
+  }
+}
+
+查询结果:
+{
+  "took" : 1,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 10000,
+      "relation" : "gte"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "group_by_order_status" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 2867,
+      "buckets" : [
+        {
+          "key" : "已支付",
+          "doc_count" : 283551,
+          "sum_payment" : {
+            "value" : 1.3929642002870772E9
+          }
+        },
+        {
+          "key" : "产品已失效",
+          "doc_count" : 1541,
+          "sum_payment" : {
+            "value" : 7423207.422923565
+          }
+        },
+        {
+          "key" : "已退款",
+          "doc_count" : 1525,
+          "sum_payment" : {
+            "value" : 7317384.041737914
+          }
+        },
+        {
+          "key" : "已关单",
+          "doc_count" : 1523,
+          "sum_payment" : {
+            "value" : 7653597.489830017
+          }
+        },
+        {
+          "key" : "支付中",
+          "doc_count" : 1520,
+          "sum_payment" : {
+            "value" : 7125519.161476195
+          }
+        },
+        {
+          "key" : "已发货",
+          "doc_count" : 1506,
+          "sum_payment" : {
+            "value" : 7896203.374843597
+          }
+        },
+        {
+          "key" : "发货失败",
+          "doc_count" : 1502,
+          "sum_payment" : {
+            "value" : 7952565.1824413985
+          }
+        },
+        {
+          "key" : "代付拒绝",
+          "doc_count" : 1498,
+          "sum_payment" : {
+            "value" : 7157539.755363226
+          }
+        },
+        {
+          "key" : "订单过期",
+          "doc_count" : 1484,
+          "sum_payment" : {
+            "value" : 7191433.1686964035
+          }
+        },
+        {
+          "key" : "未支付",
+          "doc_count" : 1483,
+          "sum_payment" : {
+            "value" : 7150067.972304463
+          }
+        }
+      ]
+    }
+  }
+}
