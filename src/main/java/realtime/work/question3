@@ -1,0 +1,40 @@
+question3: 安装canal，并在kafka控制台消费者中验证canal能采集到数据给kafka
+
+1. 开启Mysql Binlog日志
+server-id=1
+binlog-format=ROW
+binlog-do-db=dwshow
+
+2. 安装Canal
+
+(1) 安装cacel
+mkdir /opt/modules/canal
+tar -zxf canal.deployer-1.1.4.tar.gz -C /opt/modules/canal
+
+(2) 配置 conf/canal.properties
+canal.zkServers =linux121:2181,linux123:2181
+canal.serverMode = kafka
+canal.mq.servers =linux121:9092,linux123:9092
+
+(3) 修改 conf/example/instance.properties
+canal.instance.master.address = linux123:3306
+canal.instance.dbUsername = canal
+canal.instance.dbPassword = canal
+canal.mq.topic = test
+
+(4) 启动canal
+sh bin/startup.sh
+
+(5) 启动Kafka验证数据采集
+./kafka-server-start.sh ../config/server.properties
+bin/kafka-topics.sh --zookeeper linux123:2181 --create --replication-factor 3 -partitions 1 --topic test
+bin/kafka-console-producer.sh --broker-list linux123:9092 --topic test
+bin/kafka-console-consumer.sh --zookeeper linux123:2181 --topic test --from-beginning
+
+(6) 在mysql中插入和修改数据
+insert: {"data":[{"productId":"115908","productName":"索尼 xxx10","shopId":"100365","price":"297.80","isSale":"1","status":"0","categoryId":"10395","cr eateTime":"2020-07-12 13:22:22","modifyTime":"2020-07-12 13:22:22"}], "database":"dwshow","es":1601016416000,"id":455,"isDdl":false,"mysqlType": {"productId":"bigint(11)","productName":"varchar(200)","shopId":"bigint(11)","price":"decima l(11,2)","isSale":"tinyint(4)","status":"tinyint(4)","categoryId":"int(11)","createTime":"va rchar(25)","modifyTime":"datetime"},"old":null,"pkNames":null,"sql":"","sqlType": {"productId":-5,"productName":12,"shopId":-5,"price":3,"isSale":-6,"status":-6,"categoryId": 4,"createTime":12,"modifyTime":93},"table":"lagou_product_info","ts":1601016422194,"type":"INSERT"}
+update: {"data":[{"productId":"115908","productName":"索尼 xxx10","shopId":"100365","price":"300.0","isSale":"1","status":"0","categoryId":"10395","cre ateTime":"2020-07-12 13:22:22","modifyTime":"2020-09-27 02:51:16"}], "database":"dwshow","es":1601189476000,"id":456,"isDdl":false,"mysqlType": {"productId":"bigint(11)","productName":"varchar(200)","shopId":"bigint(11)","price":"decima l(11,2)","isSale":"tinyint(4)","status":"tinyint(4)","categoryId":"int(11)","createTime":"va rchar(25)","modifyTime":"datetime"},"old":[{"price":"297.80","modifyTime":"2020-07-12 13:22:22"}],"pkNames":null,"sql":"","sqlType": {"productId":-5,"productName":12,"shopId":-5,"price":3,"isSale":-6,"status":-6,"categoryId": 4,"createTime":12,"modifyTime":93},"table":"lagou_product_info","ts":1601189477116,"type":"UPDATE"
+delete: {"data":[{"productId":"115908","productName":"索尼 xxx10","shopId":"100365","price":"300.0","isSale":"1","status":"0","categoryId":"10395","cre ateTime":"2020-07-12 13:22:22","modifyTime":"2020-09-27 02:51:16"}], "database":"dwshow","es":1601189576000,"id":457,"isDdl":false,"mysqlType": {"productId":"bigint(11)","productName":"varchar(200)","shopId":"bigint(11)","price":"decima l(11,2)","isSale":"tinyint(4)","status":"tinyint(4)","categoryId":"int(11)","createTime":"va rchar(25)","modifyTime":"datetime"},"old":null,"pkNames":null,"sql":"","sqlType": {"productId":-5,"productName":12,"shopId":-5,"price":3,"isSale":-6,"status":-6,"categoryId": 4,"createTime":12,"modifyTime":93},"table":"lagou_product_info","ts":1601189576594,"type":"DELETE"}
+
+
+

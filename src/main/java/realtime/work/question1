@@ -1,0 +1,37 @@
+1.熟悉业务数据库表lagou_area/lagou_trade_orders
+
+(1) lagou_area
+CREATE TABLE `lagou_area` (
+`id` int(11) NOT NULL COMMENT '区域主键',
+`name` varchar(40) DEFAULT NULL COMMENT '区域名称',
+`pid` int(11) DEFAULT NULL COMMENT '区域上级标识',
+`sname` varchar(40) DEFAULT NULL COMMENT '地名简称',
+`level` int(11) DEFAULT NULL COMMENT '区域等级',
+`citycode` varchar(20) DEFAULT NULL COMMENT '区域编码',
+`yzcode` varchar(20) DEFAULT NULL COMMENT '邮政编码',
+`mername` varchar(100) DEFAULT NULL COMMENT '组合名称',
+`Lng` float DEFAULT NULL,
+`Lat` float DEFAULT NULL,
+`pinyin` varchar(100) DEFAULT NULL,
+PRIMARY KEY (`id`)
+
+(2) lagou_trade_orders
+CREATE TABLE `lagou_trade_orders` (
+`orderId` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '订单id',
+`orderNo` varchar(20) NOT NULL COMMENT '订单编号',
+`userId` bigint(11) NOT NULL COMMENT '用户id',
+`status` tinyint(4) NOT NULL DEFAULT '-2' COMMENT '订单状态 -3:用户拒收 -2:未付款的订单 -1:用户取消 0:待发货 1:配送中 2:用户确认收货',
+`productMoney` decimal(11,2) NOT NULL COMMENT '商品金额',
+`totalMoney` decimal(11,2) NOT NULL COMMENT '订单金额(包括运费)',
+`payMethod` tinyint(4) NOT NULL DEFAULT '0' COMMENT '支付方式,0:未知;1:支付宝，2:微信;3、现金;4、其他',
+`isPay` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否支付 0:未支付 1:已支付',
+`areaId` int(11) NOT NULL COMMENT '区域最低一级',
+`tradeSrc` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单来源 0:商城 1:微信 2:手机版 3:安卓App 4:苹果App',
+`tradeType` int(11) DEFAULT '0' COMMENT '订单类型',
+`isRefund` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否退款 0:否 1:是',
+`dataFlag` tinyint(4) NOT NULL DEFAULT '1' COMMENT '订单有效标志 -1:删除 1:有效', 
+`createTime` varchar(25) NOT NULL COMMENT '下单时间',
+`payTime` varchar(25) DEFAULT NULL COMMENT '支付时间',
+`modifiedTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单更新时间', PRIMARY KEY (`orderId`)
+
+

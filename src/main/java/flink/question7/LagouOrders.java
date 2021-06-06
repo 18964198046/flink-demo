@@ -1,16 +1,12 @@
 package flink.question7;
 
-import flink.question1.WordCount;
-import jdk.jfr.DataAmount;
 import lombok.Data;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.calcite.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.util.Collector;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class LagouOrders {

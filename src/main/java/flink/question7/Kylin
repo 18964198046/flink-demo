@@ -1,0 +1,50 @@
+1. 创建表
+
+(1) 创建地区维表
+create table lagou_kylin.dim_region(
+  regionId string,
+  regionName string
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+(2) 创建日期维表
+drop table lagou_kylin.dim_date;
+create table lagou_kylin.dim_date(
+  dateid string,
+  dayofyear string,
+  dayofmonth string,
+  day_in_year string,
+  day_in_month string,
+  weekday string,
+  week_in_month string,
+  week_in_year string,
+  date_type string,
+  quarter string
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+(3) 创建渠道维表
+create table lagou_kylin.dim_channel(
+  channelId string,
+  channelName string
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+(4) 创建产品维表
+create table lagou_kylin.dim_product(
+  productId string,
+  productName string
+)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+
+2.导入数据
+LOAD DATA LOCAL INPATH '/root/kylin/dim_date.txt' OVERWRITE INTO TABLE lagou_kylin.dim_date;
+LOAD DATA LOCAL INPATH '/root/kylin/dim_region_data.txt' OVERWRITE INTO TABLE lagou_kylin.dim_region;
+LOAD DATA LOCAL INPATH '/root/kylin/dim_channel_data.txt' OVERWRITE INTO TABLE lagou_kylin.dim_channel;
+LOAD DATA LOCAL INPATH '/root/kylin/dim_product_data.txt' OVERWRITE INTO TABLE lagou_kylin.dim_product;
+
+
+3.创建CUBE
+
+
+4.CUBE剪枝
+(1) 使用衍生维度, 对于聚合工作量不大的维度，可以使用衍生纬度减少预计算量
+(2) 对于不会被查询到的维度，可以跳过这些维度，不对其进行聚合
+(3) 根据用户关注的维度组合，可以将维度划分成不同的聚合组，可以大幅度减少Cuboid数量。
